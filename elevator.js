@@ -80,10 +80,10 @@
             });
 
             this.elevatorEntrance.addEventListener('doorsClosedEvent', function(){
+                self.hideFloorChoice();
                 self.enableFloorButton();
                 self.enableFloorPanelButton();
                 self.dimIndicator();
-                self.hideFloorChoice();
 
                 if( self.floorsQueue.length == 0 ) {
                     self.isEngaged = false;
