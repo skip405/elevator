@@ -1,0 +1,146 @@
+$borderColor: #ddd;
+$elevatorBorderColor: darken($borderColor, 20%);
+$elevatorBorderWidth: 1px;
+$elevatorWidth: 60px;
+
+.house {
+    display: inline-block;
+    border: 1px $borderColor solid;
+    padding: 20px;
+    padding-left: 0;
+
+    ol {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.house__entrance {
+    display: inline-block;
+    padding-right: $elevatorWidth + 20;
+    padding-left: 80px;
+
+    position: relative;
+}
+
+.house__storey {
+    padding: 60px 0 10px;
+    border-bottom: 1px $borderColor solid;
+
+    position: relative;
+}
+
+.elevator {
+    width: $elevatorWidth;
+    height: 100%;
+    border: $elevatorBorderWidth $borderColor solid;
+    box-sizing: border-box;
+
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.elevator__cabin {
+    transition: bottom 1s;
+    border: $elevatorBorderWidth $elevatorBorderColor solid;
+    width: 100%;
+    height: 75px;
+
+    position: absolute;
+    bottom: -$elevatorBorderWidth;
+    left: -$elevatorBorderWidth;
+}
+
+.elevator__doors {
+    height: 100%;
+    overflow: hidden;
+
+    position: relative;
+}
+
+.elevator__door {
+    width: 50%;
+    border: $elevatorBorderWidth $elevatorBorderColor solid;
+
+    position: absolute;
+    top: -$elevatorBorderWidth;
+    bottom: -$elevatorBorderWidth;
+    z-index: 5;
+
+    &:before {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        margin-top: -2px;
+
+        background: #ccc;
+
+        position: absolute;
+        top: 50%;
+        z-index: 10;
+
+        content: "";
+    }
+}
+
+.elevator__door--right {
+    transition: right 1s;
+    right: -$elevatorBorderWidth;
+
+    &.elevator__door--open {
+        right: -50%;
+    }
+
+    &:before {
+        left: 5px;
+    }
+}
+
+.elevator__door--left {
+    transition: left 1s;
+    left: -$elevatorBorderWidth;
+
+    &.elevator__door--open {
+        left: -50%;
+    }
+
+    &:before {
+        right: 5px;
+    }
+}
+
+.indicator {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+
+    background: #ccc;
+}
+
+.indicator--called {
+    background: red;
+}
+
+.indicator--active {
+    background: green;
+}
+
+.elevator__floor-choice {
+    transition: opacity .5s;
+    width: 141%;
+    border: $elevatorBorderWidth $elevatorBorderColor solid;
+    opacity: 0;
+
+    position: absolute;
+    left: 0;
+    top: 105%;
+    z-index: 10;
+
+    background: #fff;
+}
+
+.elevator__floor-choice--active {
+    opacity: 1;
+}
