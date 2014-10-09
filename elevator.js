@@ -31,10 +31,10 @@
     }
 
     Elevator.prototype = {
-        "init": function(){
+        init: function(){
             this.createCustomEvents();
         },
-        "listenForCalls": function(){
+        listenForCalls: function(){
             var self = this;
 
             this.elevatorEntrance.addEventListener('click', function(e){
@@ -56,10 +56,10 @@
                 }
             });
 
-            this.elevatorEntrance.addEventListener('queueChangedEvent', function(){
+            this.elevatorEntrance.addEventListener('queueChanged', function(){
                 if( ! self.isEngaged ) {
                     if( self.getFloorToGo() == self.currentFloor ) {
-                        self.dispatchEvent(self.elevatorArrivedEvent);
+                        self.dispatchEvent(self.elevatorArrived);
                     } else {
                         self.moveToFloor();
                     }
@@ -67,13 +67,13 @@
                 }
             });
 
-            this.elevatorEntrance.addEventListener('elevatorArrivedEvent', function(){
+            this.elevatorEntrance.addEventListener('elevatorArrived', function(){
                 self.currentFloor = self.floorsQueue.shift();
                 self.showIndicatorState(self.currentFloor, 'active');
                 self.openDoors();
             });
 
-            this.elevatorEntrance.addEventListener('doorsOpenEvent', function(){
+            this.elevatorEntrance.addEventListener('doorsOpened', function(){
                 self.disableFloorPanelButton(self.currentFloor);
                 self.showFloorChoice();
                 self.doorsAutocloseTimeout = setTimeout(function(){
@@ -81,7 +81,7 @@
                 }, self.doorsAutocloseIn);
             });
 
-            this.elevatorEntrance.addEventListener('doorsClosedEvent', function(){
+            this.elevatorEntrance.addEventListener('doorsClosed', function(){
                 self.hideFloorChoice();
                 self.enableFloorButton();
                 self.enableFloorPanelButton();
@@ -101,48 +101,48 @@
                 var targetClassList = e.target.classList;
 
                 if(targetClassList.contains('elevator__cabin')) {
-                    self.dispatchEvent(self.elevatorArrivedEvent);
+                    self.dispatchEvent(self.elevatorArrived);
                 } else if( targetClassList.contains('elevator__door')) {
                     if(e.propertyName == 'left') {
                         if( targetClassList.contains('elevator__door--open') ) {
                             self.doorsOpen = true;
-                            self.dispatchEvent(self.doorsOpenEvent);
+                            self.dispatchEvent(self.doorsOpened);
                         } else {
                             self.doorsOpen = false;
-                            self.dispatchEvent(self.doorsClosedEvent);
+                            self.dispatchEvent(self.doorsClosed);
                         }
                     }
                     e.stopPropagation();
                 }
             });
         },
-        "hideFloorChoice": function(){
+        hideFloorChoice: function(){
             this.buttonsPanel.classList.remove('elevator__floor-choice--active');
         },
-        "showFloorChoice": function(){
+        showFloorChoice: function(){
             this.buttonsPanel.classList.add('elevator__floor-choice--active');
         },
-        "openDoors": function(){
+        openDoors: function(){
             this.doors[0].classList.add('elevator__door--open');
             this.doors[1].classList.add('elevator__door--open');
         },
-        "closeDoors": function(){
+        closeDoors: function(){
             this.doors[0].classList.remove('elevator__door--open');
             this.doors[1].classList.remove('elevator__door--open');
         },
-        "moveToFloor": function(){
+        moveToFloor: function(){
             var floorToGo = this.getFloorToGo() - 1;
 
             this.cabin.style.bottom = floorToGo * this.storeyHeight - 1 + 'px';
         },
-        "showIndicatorState": function(floor, state){
+        showIndicatorState: function(floor, state){
             for(var i = 0, len = this.storeys; i < len; i++){
                 if( this.indicators[i].getAttribute('data-floor-number') == floor ) {
                     this.indicators[i].classList.add('indicator--' + state);
                 }
             }
         },
-        "dimIndicator": function(){
+        dimIndicator: function(){
             for(var i = 0, len = this.storeys; i < len; i++){
                 if( this.indicators[i].getAttribute('data-floor-number') == this.currentFloor ) {
                     this.indicators[i].classList.remove('indicator--called');
@@ -150,35 +150,35 @@
                 }
             }
         },
-        "enableFloorButton": function(){
+        enableFloorButton: function(){
             for( var i = 0, len = this.storeys; i < len; i++){
                 if( this.buttons[i].getAttribute('data-floor-number') == this.currentFloor ) {
                     this.buttons[i].removeAttribute('disabled');
                 }
             }
         },
-        "disableFloorButton": function(floor){
+        disableFloorButton: function(floor){
             for( var i = 0, len = this.storeys; i < len; i++){
                 if( this.buttons[i].getAttribute('data-floor-number') == floor ) {
                     this.buttons[i].setAttribute('disabled', 'disabled');
                 }
             }
         },
-        "enableFloorPanelButton": function(){
+        enableFloorPanelButton: function(){
             for( var i = 0, len = this.storeys; i < len; i++){
                 if( this.panelButtons[i].getAttribute('data-floor-number') == this.currentFloor ) {
                     this.panelButtons[i].removeAttribute('disabled');
                 }
             }
         },
-        "disableFloorPanelButton": function(floor){
+        disableFloorPanelButton: function(floor){
             for( var i = 0, len = this.storeys; i < len; i++){
                 if( this.panelButtons[i].getAttribute('data-floor-number') == floor ) {
                     this.panelButtons[i].setAttribute('disabled', 'disabled');
                 }
             }
         },
-        "setFloorToGo": function(floor){
+        setFloorToGo: function(floor){
             var floorIndex = this.floorsQueue.indexOf(floor);
 
             //check if the chosen floor is in the queue and remove it
@@ -194,20 +194,20 @@
                 this.closeDoors();
             }
         },
-        "addFloorToQueue": function(floor){
+        addFloorToQueue: function(floor){
             this.floorsQueue.push(floor);
-            this.dispatchEvent(this.queueChangedEvent);
+            this.dispatchEvent(this.queueChanged);
         },
-        "getFloorToGo": function(){
+        getFloorToGo: function(){
             return this.floorsQueue[0];
         },
-        "createCustomEvents": function(){
-            this.doorsOpenEvent = new CustomEvent('doorsOpenEvent');
-            this.doorsClosedEvent = new CustomEvent('doorsClosedEvent');
-            this.elevatorArrivedEvent = new CustomEvent('elevatorArrivedEvent');
-            this.queueChangedEvent = new CustomEvent('queueChangedEvent');
+        createCustomEvents: function(){
+            this.doorsOpened = new CustomEvent('doorsOpened');
+            this.doorsClosed = new CustomEvent('doorsClosed');
+            this.elevatorArrived = new CustomEvent('elevatorArrived');
+            this.queueChanged = new CustomEvent('queueChanged');
         },
-        "dispatchEvent": function(event){
+        dispatchEvent: function(event){
             this.elevatorEntrance.dispatchEvent(event);
         }
     };
@@ -220,7 +220,7 @@
     }
 
     House.prototype = {
-        "build": function(){
+        build: function(){
             var entrancesContainer = document.querySelector('.house__entrances'),
                 html = "",
                 storeysHTML = "",
@@ -240,7 +240,7 @@
 
             this.addElevators();
         },
-        "addElevators": function(){
+        addElevators: function(){
             var buttonsHTML = "";
 
             //build floor buttons
